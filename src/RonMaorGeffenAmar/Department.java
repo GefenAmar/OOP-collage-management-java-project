@@ -1,5 +1,7 @@
 package RonMaorGeffenAmar;
 
+import java.util.Arrays;
+
 public class Department {
 	private String departmentName;
 	private int departmentNumOfStudents,departmentNumOfLecturers;
@@ -38,12 +40,16 @@ public class Department {
 
 	public boolean addLecturerToDepartment(Lecturer lecturer) {
 		if (lecturer.getLecturerDepartment() != null) {
-			System.out.println("RonMaorGeffenAmar.Lecturer" + lecturer.getLecturerName() + "is already assigned to a department.");
+			System.out.println("Lecturer" + lecturer.getLecturerName() + "is already assigned to a department.");
 			return false;
 		}
 		
 		if (departmentNumOfLecturers == lecturersArray.length) {
-			Lecturer[] newArray = new Lecturer[lecturersArray.length + 1];
+			int arraySize = lecturersArray.length;
+			if (arraySize == 0) {
+				arraySize = 1;
+			}
+			Lecturer[] newArray = new Lecturer[arraySize * 2];
 			for (int i = 0; i < lecturersArray.length; i++) {
 				newArray[i] = lecturersArray[i];
 			}
@@ -51,12 +57,13 @@ public class Department {
 		}
 		
 		lecturersArray[departmentNumOfLecturers++] = lecturer;
-		lecturer.setDepartment(this);
 		return true;
 	}
-	
-			
-		
+
+	@Override
+	public String toString() {
+		return departmentName;
+	}
 }
 
 

@@ -15,10 +15,11 @@ public class DepartmentsArray {
 	
 	public void addDepartment(Department department) {
 		if (numOfDepartments == departmentsArray.length) {
-			if (numOfDepartments == 0) {
-				numOfDepartments = 1;
+			int arraySize = departmentsArray.length;
+			if (arraySize == 0) {
+				arraySize = 1;
 			}
-			Department[] newArray = new Department[numOfDepartments * 2];
+			Department[] newArray = new Department[arraySize * 2];
 			
 			for (int i = 0; i < departmentsArray.length; i++) {
 				newArray[i] = departmentsArray[i];

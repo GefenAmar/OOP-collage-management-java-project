@@ -15,10 +15,11 @@ public class CommitteesArray {
 	
 	public void addCommittee(Committee committee) {
 		if (numOfCommittees == committeesArray.length) {
-			if (numOfCommittees == 0) {
-				numOfCommittees = 1;
+			int arraySize = committeesArray.length;
+			if (arraySize == 0) {
+				arraySize = 1;
 			}
-			Committee[] newArray = new Committee[numOfCommittees * 2];
+			Committee[] newArray = new Committee[arraySize * 2];
 			
 			for (int i = 0; i < committeesArray.length; i++) {
 				newArray[i] = committeesArray[i];

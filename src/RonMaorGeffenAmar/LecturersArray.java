@@ -10,10 +10,11 @@ public class LecturersArray {
 	
 	public void addLecturer(Lecturer lecturer) {
 		if (numOfLecturers == lecturersArray.length) {
-			if (numOfLecturers == 0) {
-				numOfLecturers = 1;
+			int arraySize = lecturersArray.length;
+			if (arraySize == 0) {
+				arraySize = 1;
 			}
-			Lecturer[] newArray = new Lecturer[numOfLecturers * 2];
+			Lecturer[] newArray = new Lecturer[arraySize * 2];
 			
 			for (int i = 0; i < lecturersArray.length; i++) {
 				newArray[i] = lecturersArray[i];
@@ -51,7 +52,7 @@ public class LecturersArray {
 		
 		System.out.println("Lecturers:");
 		for (int i = 0; i < numOfLecturers ; i++) {
-			System.out.println((i+1) + "." + lecturersArray[i]);
+			System.out.println((i+1) + ". " + lecturersArray[i]);
 		}
 	}
 	

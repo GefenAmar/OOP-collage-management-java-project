@@ -1,5 +1,6 @@
 package RonMaorGeffenAmar;
 
+
 public class Committee {
 	private final String committeeName;
 	private Lecturer headOfCommittee;
@@ -25,9 +26,9 @@ public class Committee {
 	}
 	
 	public boolean newHeadOfCommittee(Lecturer newHead) {
-		Lecturer.Degree degree = newHead.getDegree();
+		DegreeDetails degree = newHead.getDegree();
 		
-		if (!(degree.equals(Lecturer.Degree.Doctor) || degree.equals(Lecturer.Degree.Professor))) {
+		if (!(degree.equals(DegreeDetails.Doctor) || degree.equals(DegreeDetails.Professor))) {
 			return false;
 		}
 		
@@ -48,13 +49,20 @@ public class Committee {
 				return false;
 			}
 		}
-		
-		Lecturer[] newArray = new Lecturer[numOfLecturersInCommittee + 1];
-		for (int i = 0; i < numOfLecturersInCommittee; i++) {
-			newArray[i] = lecturersArray[i];
+
+		if (numOfLecturersInCommittee == lecturersArray.length) {
+			int arraySize = lecturersArray.length;
+			if (arraySize == 0) {
+				arraySize = 1;
+			}
+			Lecturer[] newArray = new Lecturer[arraySize * 2];
+			for (int i = 0; i < numOfLecturersInCommittee; i++) {
+				newArray[i] = lecturersArray[i];
+			}
+			lecturersArray = newArray;
 		}
-		newArray[numOfLecturersInCommittee] = lecturer;
-		lecturersArray = newArray;
+
+		lecturersArray[numOfLecturersInCommittee] = lecturer;
 		numOfLecturersInCommittee++;
 		return true;
 	}
@@ -88,10 +96,10 @@ public class Committee {
 	}
 	
 	public String toString() {
-		return "RonMaorGeffenAmar.Committee Details: "+
+		return "Committee Details: "+
 		"Name: " + committeeName + "," + 
-		"Head Of RonMaorGeffenAmar.Committee: " + headOfCommittee +  "," +
-		"Number Of Lecturers In RonMaorGeffenAmar.Committee: " + numOfLecturersInCommittee + ".";
+		"Head Of Committee: " + headOfCommittee +  "," +
+		"Number Of Lecturers In Committee: " + numOfLecturersInCommittee + ".";
 	 }
 
 }

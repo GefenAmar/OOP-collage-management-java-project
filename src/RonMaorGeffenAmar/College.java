@@ -100,7 +100,7 @@ public class College {
 		Committee committee = committeesArray.getCommitteeByName(committeeName);
 		
 		if (lecturer != null && committee != null) {
-			return committee.addLecturerToCommittee(lecturer);
+			return committee.addLecturerToCommittee(lecturer) && lecturer.addLecturerToCommittee(committee);
 		}
 		return false;
 	}

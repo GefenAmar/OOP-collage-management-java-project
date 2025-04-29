@@ -3,38 +3,23 @@ package RonMaorGeffenAmar;
 public class Lecturer {
 	private final String lecturerName;
     private final String degreeName;
-	private final Degree degree;
+	private final DegreeDetails degree;
 	private final int id;
     private final int wage;
 	private Department department;
 	private Committee[] committees;
+	private int numOfCommitteesLecturerIsIn;
 
 
-	public enum Degree {
-		First,
-		Second,
-		Doctor,
-		Professor;
-
-		public static Degree fromName(String name) {
-            return switch (name.toLowerCase()) {
-                case "first" -> First;
-                case "second" -> Second;
-                case "doctor" -> Doctor;
-                default -> Professor;
-            };
-		}
-	}
-	
-	public Lecturer(String lecturerName, String degree, String degreeName, Department department, int id, int wage) {
+	public Lecturer(String lecturerName, String degree, String degreeName, int id, int wage) {
 		this.lecturerName = lecturerName;
-		this.degree = Degree.fromName(degree);
+		this.degree = DegreeDetails.fromName(degree);
 		this.degreeName = degreeName;
-		this.department = department;
+		this.department = null;
 		this.id = id;
 		this.wage = wage;
-
-		
+		this.committees = new  Committee[2];
+		this.numOfCommitteesLecturerIsIn = 0;
 	}
 	
 	public String getLecturerName() {
@@ -45,7 +30,7 @@ public class Lecturer {
 		return degreeName;
 	}
 
-	public Degree getDegree() {
+	public DegreeDetails getDegree() {
 		return degree;
 	}
 
@@ -63,15 +48,47 @@ public class Lecturer {
 	
 	public void setDepartment(Department department) {
 		this.department = department;
-	
 	}
+
+	public boolean addLecturerToCommittee(Committee committee) {
+		if (numOfCommitteesLecturerIsIn == committees.length) {
+			int arraySize = committees.length;
+			if (arraySize == 0) {
+				arraySize = 1;
+			}
+			Committee[] newArray = new Committee[arraySize * 2];
+
+			for (int i = 0; i < committees.length; i++) {
+				newArray[i] = committees[i];
+			}
+
+			committees = newArray;
+		}
+
+		committees[numOfCommitteesLecturerIsIn] = committee;
+		numOfCommitteesLecturerIsIn++;
+		return true;
+	}
+
+	private String getLecturerCommittees() {
+		StringBuilder committeesString = new StringBuilder();
+		for (int i = 0; i < numOfCommitteesLecturerIsIn; i++) {
+			committeesString.append(committees[i].getCommitteeName());
+			if (i != numOfCommitteesLecturerIsIn - 1) {
+				committeesString.append(", ");
+			}
+		}
+		return committeesString.toString();
+	}
+
 	public String toString() {
-		return "RonMaorGeffenAmar.Lecturer Details: "+
-		"Name: " + lecturerName + "," + 
-		"RonMaorGeffenAmar.Degree: " + degree +  "," +
-		"RonMaorGeffenAmar.Degree Name: " + degreeName + "," +
-		"RonMaorGeffenAmar.Department: " + department +  "," +
-		"ID: " + id +  "," +
+		return "Lecturer Details: "+
+		"Name: " + lecturerName + ", " +
+		"Degree: " + degree +  ", " +
+		"Degree Name: " + degreeName + ", " +
+		"Department: " + department +  ", " +
+		"Committees: " + getLecturerCommittees() +  ", " +
+		"ID: " + id +  ", " +
 		"Wage: " + wage + ".";
 	 }
 }

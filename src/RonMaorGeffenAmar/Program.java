@@ -10,15 +10,15 @@ public class Program {
 	}
 
 	private static final String[] MENU = {
-			"Exit RonMaorGeffenAmar.Program",
-			"Add RonMaorGeffenAmar.Lecturer",
-			"Add RonMaorGeffenAmar.Committee",
-			"Book a RonMaorGeffenAmar.Lecturer to a RonMaorGeffenAmar.Committee",
-			"New Head of RonMaorGeffenAmar.Committee",
-			"Remove RonMaorGeffenAmar.Lecturer from a RonMaorGeffenAmar.Committee",
-			"Add RonMaorGeffenAmar.Department",
+			"Exit Program",
+			"Add Lecturer",
+			"Add Committee",
+			"Book a Lecturer to a Committee",
+			"New Head of Committee",
+			"Remove Lecturer from a Committee",
+			"Add Department",
 			"Show Lecturers Total Average Wage",
-			"Show Lecturers Average Wage Per RonMaorGeffenAmar.Department",
+			"Show Lecturers Average Wage Per Department",
 			"Show Lecturers & Details",
 			"Show Committees & Details"
 			// Add more options
@@ -26,16 +26,15 @@ public class Program {
 
 	public static void run() {
 		s = new Scanner(System.in);
-		System.out.println("Enter The Name of The RonMaorGeffenAmar.College:");
+		System.out.println("Enter The Name of The College:");
 		String collegeName = s.nextLine();
 		College college = new College(collegeName);
 		int userChosen;
 		do {
-			userChosen = showMenu(s);
+			showMenu(s);
+			userChosen = getUserInput(s);
 			switch (userChosen) {
-				case 0 ->
-						System.out.println("Done... Bye");
-
+				case 0 ->System.out.println("Done... Bye");
 				case 1 -> addLecturer(college);
 				case 2 -> addCommittee(college);
 				case 3 -> addCommitteeMember(college);
@@ -52,13 +51,17 @@ public class Program {
 		} while (userChosen != 0);
 	}
 
-	public static int showMenu(Scanner s) {
+	private static int getUserInput(Scanner s) {
+		int choice = s.nextInt();
+		s.nextLine();
+		return choice;
+	}
+
+	public static void showMenu(Scanner s) {
 		System.out.println("\n====== Menu =======");
 		for (int i = 0; i < MENU.length; i++) {
 			System.out.println(i + ". " + MENU[i]);
 		}
-		System.out.println("Please enter your choice : ");
-		return s.nextInt();
 	}
 
 	private static void showTotalAverageWage(College college) {
@@ -71,14 +74,14 @@ public class Program {
 		String name = s.nextLine();
 
 		double averageWageByDepartment = college.getAverageWageByDepartment(name);
-		System.out.println("RonMaorGeffenAmar.Department Wage Average: " + averageWageByDepartment);
+		System.out.println("Department Wage Average: " + averageWageByDepartment);
 	}
 
 	private static void addDepartment(College college) {
-		System.out.println("Enter RonMaorGeffenAmar.Department Name: ");
+		System.out.println("Enter Department Name: ");
 		String departmentName = s.nextLine();
 		while (college.isDepartmentExistInCollege(departmentName)) {
-			System.out.print("RonMaorGeffenAmar.Department name already exist. Try again: ");
+			System.out.print("Department name already exist. Try again: ");
 			departmentName = s.nextLine();
 		}
 		System.out.println("Enter number of students in this department: ");
@@ -89,10 +92,10 @@ public class Program {
 	}
 
 	private static void removeCommitteeMember(College college) {
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer Name: ");
+		System.out.println("Enter Lecturer Name: ");
 		String lecturerToRemove = s.nextLine();
 
-		System.out.println("Enter RonMaorGeffenAmar.Committee Name: ");
+		System.out.println("Enter Committee Name: ");
 		String committeeToRemoveFrom = s.nextLine();
 
 		college.removeLecturerFromCommittee(lecturerToRemove, committeeToRemoveFrom);
@@ -109,27 +112,27 @@ public class Program {
 	}
 
 	private static void addCommitteeMember(College college) {
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer Name: ");
+		System.out.println("Enter Lecturer Name: ");
 		String lecturerNameForCommittee = s.nextLine();
 
-		System.out.println("Enter RonMaorGeffenAmar.Committee Name: ");
+		System.out.println("Enter Committee Name: ");
 		String committeeNameForLecturer = s.nextLine();
 
 		boolean addLecturerToCommitteeSuccess = college.addLecturerToCommittee(lecturerNameForCommittee, committeeNameForLecturer);
 
 		if (!addLecturerToCommitteeSuccess) {
-			System.out.println("Failed to add RonMaorGeffenAmar.Lecturer to the committee.");
+			System.out.println("Failed to add Lecturer to the committee.");
 		}
 
-		System.out.println("RonMaorGeffenAmar.Lecturer has been added successfully.");
+		System.out.println("Lecturer has been added successfully.");
 	}
 
 	private static void addCommittee(College college) {
-		System.out.println("Enter RonMaorGeffenAmar.Committee Name: ");
+		System.out.println("Enter Committee Name: ");
 		String committeeName = s.nextLine();
 
 		while (college.isCommitteeExistInCollege(committeeName)) {
-			System.out.print("RonMaorGeffenAmar.Committee name already exist. Try again: ");
+			System.out.print("Committee name already exist. Try again: ");
 			committeeName = s.nextLine();
 		}
 
@@ -138,41 +141,39 @@ public class Program {
 	}
 
 	private static void addLecturer(College college) {
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer Name: ");
+		System.out.println("Enter Lecturer Name: ");
 		String lecturerName = s.nextLine();
 		while (college.isLecturerExistInCollege(lecturerName)) {
-			System.out.print("RonMaorGeffenAmar.Lecturer name already exist. Try again: ");
+			System.out.print("Lecturer name already exist. Try again: ");
 			lecturerName = s.nextLine();
 		}
-		s.nextLine();
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer RonMaorGeffenAmar.Degree: First/Second/Doctor/Professor ");
+		System.out.println("Enter Lecturer Degree: First/Second/Doctor/Professor ");
 		String lecturerDegree = s.nextLine();
 
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer RonMaorGeffenAmar.Degree Name: ");
+		System.out.println("Enter Lecturer Degree Name: ");
 		String lecturerDegreeName = s.nextLine();
 
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer RonMaorGeffenAmar.Department: ");
+		System.out.println("Enter Lecturer Department: ");
 		String lecturerDepartment = s.nextLine();
 		Department departmentLinkedTo = college.getDepartmentByName(lecturerDepartment);
 
-
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer ID: ");
+		System.out.println("Enter Lecturer ID: ");
 		int lecturerID = s.nextInt();
 		s.nextLine();
 
-		System.out.println("Enter RonMaorGeffenAmar.Lecturer Wage: ");
+		System.out.println("Enter Lecturer Wage: ");
 		int lecturerWage = s.nextInt();
 		s.nextLine();
 
-		Lecturer lecturer = new Lecturer(
-				lecturerName,
-				lecturerDegree,
-				lecturerDegreeName,
-				departmentLinkedTo,
-				lecturerID,
-				lecturerWage
-		);
-
+		Lecturer lecturer = new Lecturer(lecturerName, lecturerDegree, lecturerDegreeName, lecturerID, lecturerWage);
 		college.addLecturerToCollege(lecturer);
+		System.out.println("Lecturer has been added successfully to college.");
+		boolean addedToDepartment = departmentLinkedTo.addLecturerToDepartment(lecturer);
+		if (addedToDepartment) {
+			lecturer.setDepartment(departmentLinkedTo);
+			System.out.println("Lecturer has been added successfully to department.");
+		} else {
+			System.out.println("Failed to add lecturer to department.");
+		}
 	}
 }
