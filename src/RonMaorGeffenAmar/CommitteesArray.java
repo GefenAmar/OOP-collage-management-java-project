@@ -4,13 +4,10 @@ public class CommitteesArray {
 	private int numOfCommittees;
 	private Committee[] committeesArray;
 	
-	public CommitteesArray(int numOfCommittees,Committee[] committeesArray) {
-		this.numOfCommittees = 0;
-		this.committeesArray = committeesArray;
-	}
-	
 	public CommitteesArray(int numOfCommittees) {
 		committeesArray = new Committee[numOfCommittees];
+		this.numOfCommittees = 0;
+		
 	}
 	
 	public void addCommittee(Committee committee) {
