@@ -58,6 +58,9 @@ public class Lecturer {
 	}
 	
 	public Department getLecturerDepartment() {
+		if (department == null){
+			return "Lecturer" + lecturerName + " is not linked to any department";
+		}
 		return department;
 	}
 	
