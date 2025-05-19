@@ -1,8 +1,11 @@
 package RonMaorGeffenAmar;//Ron Maor and Geffen Amar
+import Exceptions.DepartmentNotFoundException;
+
 import java.util.Scanner;
 
 public class Program {
 	public static Scanner s;
+
 	public static void main(String[] args) {
 		s = new Scanner(System.in);
 		run();
@@ -34,7 +37,7 @@ public class Program {
 			showMenu(s);
 			userChosen = getUserInput(s);
 			switch (userChosen) {
-				case 0 ->System.out.println("Done... Bye");
+				case 0 -> System.out.println("Done... Bye");
 				case 1 -> addLecturer(college);
 				case 2 -> addCommittee(college);
 				case 3 -> addCommitteeMember(college);
@@ -69,13 +72,14 @@ public class Program {
 		System.out.println("Total Average Wage: " + totalAverageWage);
 	}
 
-	private static void showDepartmentAverageWage(College college) {
-		System.out.println("Choose a department");
-		String name = s.nextLine();
+	private static void showDepartmentAverageWage(College college) throws DepartmentNotFoundException {
+        System.out.println("Choose a department");
+        String name = s.nextLine();
 
-		double averageWageByDepartment = college.getAverageWageByDepartment(name);
+        double averageWageByDepartment = college.getAverageWageByDepartment(name);
 		System.out.println("Department Wage Average: " + averageWageByDepartment);
 	}
+
 
 	private static void addDepartment(College college) {
 		System.out.println("Enter Department Name: ");
