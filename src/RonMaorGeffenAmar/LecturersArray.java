@@ -83,6 +83,17 @@ public class LecturersArray implements Cloneable {
 			System.out.println((i+1) + ". " + lecturersArray[i]);
 		}
 	}
+
+	public int getLecturersNumOfResearchPapers() {
+		int totalResearchPapers = 0;
+		for (int i = 0; i < numOfLecturers; i++) {
+			if (lecturersArray[i] instanceof Doctor doctor) {
+                totalResearchPapers += doctor.getNumberOfResearchPapers();
+			}
+		}
+		return totalResearchPapers;
+	}
+
 	
 	public double getLecturerWageAverage() {
 		if (numOfLecturers == 0) return 0;

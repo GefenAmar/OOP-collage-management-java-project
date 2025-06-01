@@ -12,6 +12,10 @@ public class Doctor extends Lecturer implements Comparable {
         this.researchPapers = new String[2];
     }
 
+    public int getNumberOfResearchPapers() {
+        return numberOfResearchPapers;
+    }
+
     @Override
     public String toString() {
         return  super.toString() +

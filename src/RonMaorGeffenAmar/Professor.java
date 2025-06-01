@@ -1,5 +1,4 @@
 package RonMaorGeffenAmar;
-import java.util.Arrays;
 
 public class Professor extends Doctor {
     private String nameOfUniversity;

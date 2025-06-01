@@ -1,5 +1,7 @@
 package RonMaorGeffenAmar;//Ron Maor and Geffen Amar
 
+import Comparators.CompareDepartmentsByMembers;
+import Comparators.CompareDepartmentsByPapers;
 import Exceptions.*;
 
 import java.util.Scanner;
@@ -26,11 +28,11 @@ public class Program {
 			"Show Lecturers & Details",
 			"Show Committees & Details",
 			"Compare Doctors and Professors by Number of Research Papers",
-			"Compare Departments by number of members OR total number of research papers of Department's members",
 			"Copy all the details of the chosen committee to a new committee with the same name (changes are doable afterwards)",
-			"Book Lecturer to Department",
-
-			// Add more options
+			"Add Lecturer to Department",
+			"Remove Lecturer from Department",
+			"Compare Departments by number of members",
+			"Compare Departments by total number of research papers of Department's members"
 	};
 
 	public static void run() {
@@ -40,7 +42,7 @@ public class Program {
 		College college = new College(collegeName);
 		int userChosen;
 		do {
-			showMenu(s);
+			showMenu();
 			userChosen = getUserInput(s);
 			switch (userChosen) {
 				case 0 -> System.out.println("Done... Bye");
@@ -55,12 +57,43 @@ public class Program {
 				case 9 -> college.showLecturersInCollege();
 				case 10 -> college.showCommitteesInCollege();
 				case 11 -> compareDoctorsAndProfessorsByResearchPapers(college);
-				case 12 -> compareDepartments(college);
-				case 13 -> cloneCommittee(college);
-				//case 14 -> college.bookLecturerToDepartment();
+				case 12 -> cloneCommittee(college);
+				case 13 -> addLecturerToDepartment(college);
+				case 14 -> removeLecturerFromDepartment(college);
+				case 15 -> compareDepartments(college, "members");
+				case 16 -> compareDepartments(college, "research papers");
 				default -> System.out.println("Unexpected value");
 			}
 		} while (userChosen != 0);
+	}
+
+	private static void removeLecturerFromDepartment(College college) {
+		System.out.println("Enter Lecturer name: ");
+		String lecturerName = s.nextLine();
+
+		System.out.println("Enter Department name: ");
+		String departmentName = s.nextLine();
+		try {
+			college.removeLecturerFromDepartment(lecturerName, departmentName);
+			System.out.println("Lecturer has been removed successfully from the department.");
+		} catch (LecturerNotFoundException | DepartmentNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void addLecturerToDepartment(College college) {
+		System.out.println("Enter Lecturer name: ");
+		String lecturerName = s.nextLine();
+
+		System.out.println("Enter Department name: ");
+		String departmentName = s.nextLine();
+
+		try {
+			college.addLecturerToDepartment(lecturerName, departmentName);
+			System.out.println("Lecturer has been added successfully to the department.");
+		} catch (LecturerNotFoundException | DepartmentNotFoundException | LecturerAlreadyExistException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private static void cloneCommittee(College college) {
@@ -75,8 +108,8 @@ public class Program {
         }
     }
 
-	private static void compareDepartments(College college) {
-		System.out.println("Comparing Departments");
+	private static void compareDepartments(College college, String comparisonType) {
+		System.out.println("Comparing Departments by " + comparisonType);
 		System.out.println("Enter name of first Department: ");
 		String firstDepartmentName = s.nextLine();
 
@@ -95,13 +128,25 @@ public class Program {
 			return;
 		}
 
-		int compareResult = college.compareDepartments(firstDepartment, secondDepartment);
+		int compareResult;
+		switch (comparisonType) {
+			case "members":
+				compareResult = new CompareDepartmentsByMembers().compare(firstDepartment, secondDepartment);
+				break;
+			case "research papers":
+				compareResult = new CompareDepartmentsByPapers().compare(firstDepartment, secondDepartment);
+				break;
+			default:
+				// should not happen as we passed a valid comparison type from the menu
+				System.out.println(comparisonType + " is not a valid comparison type.");
+				return;
+		}
 		if (compareResult > 0) {
-			System.out.println(firstDepartmentName + " is greater than " + secondDepartmentName);
+			System.out.println(firstDepartmentName + " has more " + comparisonType + " than " + secondDepartmentName);
 		} else if (compareResult < 0) {
-			System.out.println(secondDepartmentName + " is greater than " + firstDepartmentName);
+			System.out.println(secondDepartmentName + " has more  " + comparisonType + "  than " + firstDepartmentName);
 		} else {
-			System.out.println(firstDepartmentName + " and " + secondDepartmentName + " have the same number of members and same number of research papers.");
+			System.out.println(firstDepartmentName + " and " + secondDepartmentName + " have the same number of " + comparisonType +".");
 		}
 	}
 
@@ -139,7 +184,7 @@ public class Program {
 		return choice;
 	}
 
-	public static void showMenu(Scanner s) {
+	public static void showMenu() {
 		System.out.println("\n====== Menu =======");
 		for (int i = 0; i < MENU.length; i++) {
 			System.out.println(i + ". " + MENU[i]);
@@ -284,23 +329,5 @@ public class Program {
 				System.out.println(e.getMessage());
 			}
 		}
-	}
-	private static void bookLecturerToDepartment(College  college) throws LecturerNotFoundException, DepartmentNotFoundException {
-		System.out.println("Enter Lecturer Name: ");
-		String lecturerName = s.nextLine();
-
-		if (lecturerName == null) {
-			throw new LecturerNotFoundException("Lecturer not found.");
-		}
-		System.out.println("Enter Department Name: ");
-		String departmentName = s.nextLine();
-		if(departmentName == null) {
-			throw new DepartmentNotFoundException("Department not found.");
-		}
-		college.addLecturerToDepartment(lecturerName, departmentName);
-
-
-
-
 	}
 }

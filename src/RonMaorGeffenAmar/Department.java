@@ -1,19 +1,18 @@
 package RonMaorGeffenAmar;
 
-import java.util.Arrays;
+import Exceptions.LecturerAlreadyExistException;
+import Exceptions.LecturerNotFoundException;
 
 public class Department {
 	private String departmentName;
-	private int departmentNumOfStudents,departmentNumOfLecturers;
-	private Lecturer[] lecturersArray;
+	private int departmentNumOfStudents;
+	private LecturersArray lecturersArray;
 	
 	public Department(String departmentName,int departmentNumOfStudents) {
 		this.departmentName = departmentName;
 		this.departmentNumOfStudents = departmentNumOfStudents;
-		this.lecturersArray = new Lecturer[departmentNumOfLecturers];
-		this.departmentNumOfLecturers = 0;
+		this.lecturersArray = new LecturersArray();
 	}
-	
 	public String getDepartmentName() {
 		return departmentName;
 	}
@@ -21,55 +20,37 @@ public class Department {
 	public int getDepartmentNumOfStudents() {
 		return departmentNumOfStudents;
 	}
-	
+
 	public int getDepartmentNumOfLecturers() {
-		return departmentNumOfLecturers;
-		
+		return lecturersArray.getNumOfLecturers();
 	}
-	
+
 	public double getDepartmentWageAverage() {
-		if (departmentNumOfLecturers == 0) return 0;
+		int departmentNumOfLecturers = getDepartmentNumOfLecturers();
+		if (departmentNumOfLecturers == 0) {
+			return 0;
+		}
+
+		Lecturer[] lecturers = lecturersArray.getLecturersArray();
 		
 		int totalWage = 0;
-		for (int i=0; i < departmentNumOfLecturers; i++) {
-			totalWage += lecturersArray[i].getLecturerWage();
+		for (int i = 0; i < departmentNumOfLecturers; i++) {
+			totalWage += lecturers[i].getLecturerWage();
 		}
 		return (double) totalWage / departmentNumOfLecturers;
 	}
 
-
-	public boolean addLecturerToDepartment(Lecturer lecturer) {
+	public void addLecturerToDepartment(Lecturer lecturer) throws LecturerAlreadyExistException, LecturerNotFoundException {
 		if (lecturer.getLecturerDepartment() != null) {
-			System.out.println("Lecturer" + lecturer.getLecturerName() + "is already assigned to a department.");
-			return false;
+			System.out.println("Lecturer" + lecturer.getLecturerName() + "is already assigned to a department, removing");
+			lecturer.getLecturerDepartment().removeLecturerFromDepartment(lecturer.getLecturerName());
 		}
-		
-		if (departmentNumOfLecturers == lecturersArray.length) {
-			int arraySize = lecturersArray.length;
-			if (arraySize == 0) {
-				arraySize = 1;
-			}
-			lecturersArray = Arrays.copyOf(lecturersArray, arraySize * 2);
-		}
-		
-		lecturersArray[departmentNumOfLecturers] = lecturer;
-		departmentNumOfLecturers++;
-		return true;
+		lecturersArray.addLecturer(lecturer);
+		lecturer.setDepartment(this);
 	}
 
-	public boolean removeLecturerFromDepartment(Lecturer lecturer) {
-		for (int i = 0; i < departmentNumOfLecturers; i++) {
-			if (lecturersArray[i] != null && lecturersArray[i].equals(lecturer)) {
-				// Shift remaining elements to fill the gap
-				for (int j = i; j < departmentNumOfLecturers - 1; j++) {
-					lecturersArray[j] = lecturersArray[j + 1];
-				}
-				lecturersArray[departmentNumOfLecturers - 1] = null;
-				departmentNumOfLecturers--;
-				return true;
-			}
-		}
-		return false;
+	public void removeLecturerFromDepartment(String lecturer) throws LecturerNotFoundException {
+		lecturersArray.removeLecturer(lecturer);
 	}
 
 	@Override
@@ -85,8 +66,12 @@ public class Department {
 		}
 		Department that = (Department) object;
 		return departmentNumOfStudents == that.departmentNumOfStudents &&
-				departmentNumOfLecturers == that.departmentNumOfLecturers &&
+				lecturersArray.equals(that.lecturersArray) &&
 				departmentName.equals(that.departmentName);
+	}
+
+	public int getDepartmentNumOfResearchPapers() {
+		return lecturersArray.getLecturersNumOfResearchPapers();
 	}
 }
 

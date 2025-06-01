@@ -5,7 +5,7 @@ import Exceptions.*;
 public class College {
 
 	private String collegeName;
-	private final LecturersArray lecturersArray;
+	private LecturersArray lecturersArray;
 	private final CommitteesArray committeesArray;
 	private final DepartmentsArray departmentsArray;
 
@@ -129,21 +129,18 @@ public class College {
 		return firstLecturer.compareTo(secondLecturer);
 	}
 
-	public void addLecturerToDepartment(String lecturerName, String departmentName) throws LecturerNotFoundException, DepartmentNotFoundException {
+	public void addLecturerToDepartment(String lecturerName, String departmentName) throws LecturerNotFoundException, DepartmentNotFoundException, LecturerAlreadyExistException {
 		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
 		if (lecturer == null) {
-			throw new LecturerNotFoundException("Lecturer not found: " + lecturerName);
+			throw new LecturerNotFoundException( lecturerName);
 		}
 
 		Department department = departmentsArray.getDepartmentByName(departmentName);
 		if (department == null) {
-			throw new DepartmentNotFoundException("Department not found: " + departmentName);
+			throw new DepartmentNotFoundException(departmentName);
 		}
-	}
 
-	public int compareDepartments(Department firstDepartment, Department secondDepartment) {
-		// TODO - Implement comparison logic based on your criteria
-		return 0;
+		department.addLecturerToDepartment(lecturer);
 	}
 
 	public void cloneCommittee(String committeeName) throws CommitteeNotFoundException, CloneNotSupportedException, CommitteeAlreadyExistException {
@@ -154,6 +151,20 @@ public class College {
 
 		Committee clonedCommittee = committee.clone();
 		committeesArray.addCommittee(clonedCommittee);
+	}
+
+	public void removeLecturerFromDepartment(String lecturerName, String departmentName) throws LecturerNotFoundException, DepartmentNotFoundException {
+		Department department = departmentsArray.getDepartmentByName(departmentName);
+		if (department == null) {
+			throw new DepartmentNotFoundException(departmentName);
+		}
+		department.removeLecturerFromDepartment(lecturerName);
+
+		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
+		if (lecturer == null) {
+			throw new LecturerNotFoundException(lecturerName);
+		}
+		lecturer.setDepartment(null);
 	}
 }
 
