@@ -5,7 +5,7 @@ import Exceptions.CommitteeAlreadyExistException;
 public class Lecturer {
 	private final String lecturerName;
     private final String degreeName;
-	private final DegreeDetails degree;
+	protected DegreeDetails degree;
 	private final int id;
     private final int wage;
 	private Department department;

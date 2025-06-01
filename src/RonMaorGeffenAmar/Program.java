@@ -293,14 +293,27 @@ public class Program {
 		String lecturerDegreeName = null;
 		int lecturerID = -1;
 		int lecturerWage = -1;
+		String[] researchPapers = null;
+		String nameOfUniversity = null;
 
 		while (!success) {
 			System.out.println("Enter Lecturer Name: ");
 			String lecturerName = s.nextLine();
 
-			if (lecturerName == null) {
+			if (lecturerDegree == null) {
 				System.out.println("Enter Lecturer Degree: " + DegreeDetails.getAllDegrees());
 				lecturerDegree = s.nextLine();
+
+				if (DegreeDetails.Doctor.toString().equalsIgnoreCase(lecturerDegree) || DegreeDetails.Professor.toString().equalsIgnoreCase(lecturerDegree)) {
+					System.out.println("Enter Research Papers (comma separated list): ");
+					researchPapers = s.nextLine().split(",");
+
+					if (DegreeDetails.Professor.toString().equalsIgnoreCase(lecturerDegree)) {
+						System.out.println("Enter Name of University: ");
+						nameOfUniversity = s.nextLine();
+					}
+				}
+
 			}
 
 			if (lecturerDegreeName == null) {
@@ -320,7 +333,14 @@ public class Program {
 				s.nextLine();
 			}
 
-			Lecturer lecturer = new Lecturer(lecturerName, lecturerDegree, lecturerDegreeName, lecturerID, lecturerWage);
+			DegreeDetails degreeDetails = DegreeDetails.fromName(lecturerDegree);
+			Lecturer lecturer;
+			switch (degreeDetails) {
+				case Doctor -> lecturer = new Doctor(lecturerName, lecturerDegreeName, lecturerID, lecturerWage, researchPapers);
+				case Professor -> lecturer = new Professor(lecturerName, lecturerDegreeName, lecturerID, lecturerWage, researchPapers, nameOfUniversity);
+				default -> lecturer = new Lecturer(lecturerName, lecturerDegree, lecturerDegreeName, lecturerID, lecturerWage);
+			}
+
 			try {
 				college.addLecturerToCollege(lecturer);
 				System.out.println("Lecturer has been added successfully to college.");

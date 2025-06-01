@@ -3,8 +3,8 @@ package RonMaorGeffenAmar;
 public class Professor extends Doctor {
     private String nameOfUniversity;
 
-    public Professor(String lecturerName, String degreeName, int id, int wage, String nameOfUniversity) {
-        super(lecturerName, DegreeDetails.Professor.name(), degreeName, id, wage);
+    public Professor(String lecturerName, String degreeName, int id, int wage, String[] researchPapers, String nameOfUniversity) {
+        super(lecturerName, degreeName, id, wage, researchPapers);
         this.nameOfUniversity = nameOfUniversity;
     }
 

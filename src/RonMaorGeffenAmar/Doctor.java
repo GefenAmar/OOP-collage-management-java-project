@@ -3,13 +3,13 @@ package RonMaorGeffenAmar;
 import java.util.Arrays;
 
 public class Doctor extends Lecturer implements Comparable {
-    private int numberOfResearchPapers;
+    private final int numberOfResearchPapers;
     protected String[] researchPapers;
 
-    public Doctor(String name, String lecturerName, String degreeName, int id, int wage) {
+    public Doctor(String lecturerName, String degreeName, int id, int wage, String[] researchPapers) {
         super(lecturerName, DegreeDetails.Doctor.name(), degreeName, id, wage);
-        this.numberOfResearchPapers = 0;
-        this.researchPapers = new String[2];
+        this.numberOfResearchPapers = researchPapers != null ? researchPapers.length : 0;
+        this.researchPapers = researchPapers != null ? researchPapers : new String[2];
     }
 
     public int getNumberOfResearchPapers() {
@@ -35,10 +35,9 @@ public class Doctor extends Lecturer implements Comparable {
         if (other == null) {
             return 1; // null is considered less than any object
         }
-        if (!(other instanceof Doctor)) {
+        if (!(other instanceof Doctor otherDoctor)) {
             return -1; // non-Doctor objects are considered less than Doctor objects
         }
-        Doctor otherDoctor = (Doctor) other;
         return Integer.compare(this.numberOfResearchPapers, otherDoctor.numberOfResearchPapers);
     }
 }
