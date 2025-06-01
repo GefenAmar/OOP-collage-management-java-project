@@ -1,19 +1,21 @@
 package RonMaorGeffenAmar;
 
+import Exceptions.DepartmentAlreadyExistException;
+
 public class DepartmentsArray {
 	private int numOfDepartments;
 	private Department[] departmentsArray;
 	
-	public DepartmentsArray(int numOfDepartments,Department[] departmentsArray) {
+	public DepartmentsArray() {
 		this.numOfDepartments = 0;
-		this.departmentsArray = departmentsArray;
+		this.departmentsArray = new Department[2];
 	}
-	
-	public DepartmentsArray(int numOfDepartments) {
-		departmentsArray = new Department[numOfDepartments];
-	}
-	
-	public void addDepartment(Department department) {
+
+	public void addDepartment(Department department) throws DepartmentAlreadyExistException {
+		if (isDepartmentExist(department.getDepartmentName())) {
+			throw new DepartmentAlreadyExistException(department.getDepartmentName());
+		}
+
 		if (numOfDepartments == departmentsArray.length) {
 			int arraySize = departmentsArray.length;
 			if (arraySize == 0) {
@@ -31,14 +33,6 @@ public class DepartmentsArray {
 		numOfDepartments ++;
 	}
 	 
-	public boolean isDepartmentExist(String name) {
-		for(int i=0; i < numOfDepartments ; i++) {
-			if (departmentsArray[i].getDepartmentName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	public Department getDepartmentByName(String departmentName) {
 		for (int i=0; i < numOfDepartments; i++) {
 			if(departmentsArray[i].getDepartmentName().equals(departmentName)) {
@@ -47,7 +41,13 @@ public class DepartmentsArray {
 		}
 		return null;
 	}
-	
-		
 
+	private boolean isDepartmentExist(String name) {
+		for(int i=0; i < numOfDepartments ; i++) {
+			if (departmentsArray[i].getDepartmentName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
  }

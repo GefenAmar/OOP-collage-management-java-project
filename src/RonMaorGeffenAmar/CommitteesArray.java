@@ -1,19 +1,29 @@
 package RonMaorGeffenAmar;
 
+import Exceptions.CommitteeAlreadyExistException;
+
 public class CommitteesArray {
 	private int numOfCommittees;
 	private Committee[] committeesArray;
 	
-	public CommitteesArray(int numOfCommittees,Committee[] committeesArray) {
+	public CommitteesArray() {
 		this.numOfCommittees = 0;
-		this.committeesArray = committeesArray;
+		this.committeesArray = new Committee[2];
+	}
+
+	public Committee[] getCommitteesArray() {
+		return committeesArray;
+	}
+
+	public int getNumOfCommittees() {
+		return numOfCommittees;
 	}
 	
-	public CommitteesArray(int numOfCommittees) {
-		committeesArray = new Committee[numOfCommittees];
-	}
-	
-	public void addCommittee(Committee committee) {
+	public void addCommittee(Committee committee) throws CommitteeAlreadyExistException {
+		if (isCommitteeExist(committee.getCommitteeName())) {
+			throw new CommitteeAlreadyExistException(committee.getCommitteeName());
+		}
+
 		if (numOfCommittees == committeesArray.length) {
 			int arraySize = committeesArray.length;
 			if (arraySize == 0) {
@@ -30,24 +40,18 @@ public class CommitteesArray {
 		committeesArray[numOfCommittees] = committee;
 		numOfCommittees ++;
 	}
-	 
-	public boolean isCommitteeExist(String name) {
-		for(int i=0; i < numOfCommittees ; i++) {
-			if (committeesArray[i].getCommitteeName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public Committee getCommitteeByName(String committeeName) {
+
+
+	public Committee getCommitteeByName (String committeeName) {
 		for (int i=0; i < numOfCommittees; i++) {
 			if(committeesArray[i].getCommitteeName().equals(committeeName)) {
 				return committeesArray[i];
 			}
 		}
+
 		return null;
 	}
-	
+
 	public void showCommittees() {
 		if (numOfCommittees == 0) {
 			System.out.println("No core committees to display");
@@ -59,9 +63,13 @@ public class CommitteesArray {
 			System.out.println((i+1) + "." + committeesArray[i]);
 		}
 	}
-}
-	
-	
 
-		
-	 
+	private boolean isCommitteeExist(String name) {
+		for(int i=0; i < numOfCommittees ; i++) {
+			if (committeesArray[i].getCommitteeName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+}

@@ -1,14 +1,30 @@
 package RonMaorGeffenAmar;
 
-public class LecturersArray {
+import Exceptions.LecturerAlreadyExistException;
+import Exceptions.LecturerNotFoundException;
+
+public class LecturersArray implements Cloneable {
 	private int numOfLecturers;
 	private Lecturer[] lecturersArray;
 	
-	public LecturersArray(int numOfLecturers) {
-		lecturersArray = new Lecturer[numOfLecturers];
+	public LecturersArray() {
+		this.numOfLecturers = 0;
+		this.lecturersArray = new Lecturer[2];
 	}
-	
-	public void addLecturer(Lecturer lecturer) {
+
+	public Lecturer[] getLecturersArray() {
+		return lecturersArray;
+	}
+
+	public int getNumOfLecturers() {
+		return numOfLecturers;
+	}
+
+	public void addLecturer (Lecturer lecturer) throws LecturerAlreadyExistException {
+		if (isLecturerExist(lecturer.getLecturerName())) {
+			throw new LecturerAlreadyExistException(lecturer.getLecturerName());
+		}
+
 		if (numOfLecturers == lecturersArray.length) {
 			int arraySize = lecturersArray.length;
 			if (arraySize == 0) {
@@ -25,14 +41,26 @@ public class LecturersArray {
 		lecturersArray[numOfLecturers] = lecturer;
 		numOfLecturers ++;
 	}
-	 
-	public boolean isLecturerExist(String name) {
-		for(int i=0; i < numOfLecturers ; i++) {
-			if (lecturersArray[i].getLecturerName().equals(name)) {
-				return true;
+
+	public void removeLecturer (String lecturerName) throws LecturerNotFoundException {
+		int index = -1;
+		for (int i = 0; i < numOfLecturers; i++) {
+			if (lecturersArray[i].getLecturerName().equals(lecturerName)) {
+				index = i;
+				break;
 			}
 		}
-		return false;
+
+		if (index == -1) {
+			throw new LecturerNotFoundException(lecturerName);
+		}
+
+		for (int i = index; i < numOfLecturers - 1; i++) {
+			lecturersArray[i] = lecturersArray[i + 1];
+		}
+
+		numOfLecturers--;
+		lecturersArray[numOfLecturers] = null; // Clear the last element
 	}
 	
 	public Lecturer getLecturerByName(String lecturerName) {
@@ -64,6 +92,25 @@ public class LecturersArray {
 			totalWage += lecturersArray[i].getLecturerWage();
 		}
 		return (double) totalWage / numOfLecturers;
+	}
+
+	@Override
+	protected LecturersArray clone() throws CloneNotSupportedException {
+		LecturersArray clonedArray = (LecturersArray) super.clone();
+		clonedArray.lecturersArray = new Lecturer[lecturersArray.length];
+		for (int i = 0; i < numOfLecturers; i++) {
+			clonedArray.lecturersArray[i] = lecturersArray[i];
+		}
+		return clonedArray;
+	}
+
+	private boolean isLecturerExist(String name) {
+		for(int i=0; i < numOfLecturers ; i++) {
+			if (lecturersArray[i].getLecturerName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 	

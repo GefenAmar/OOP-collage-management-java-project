@@ -1,16 +1,19 @@
 package RonMaorGeffenAmar;
 
 
-public class Committee {
-	private final String committeeName;
+import Exceptions.InvalidDegreeException;
+import Exceptions.LecturerAlreadyExistException;
+import Exceptions.LecturerNotFoundException;
+
+public class Committee implements Cloneable {
+	private String committeeName;
 	private Lecturer headOfCommittee;
-	private int numOfLecturersInCommittee;
-	private Lecturer[] lecturersArray;
+	private LecturersArray lecturersArray;
 	
 	public Committee(String committeeName) {
 		this.committeeName = committeeName;
 		this.headOfCommittee = null;
-		this.numOfLecturersInCommittee = 0;
+		this.lecturersArray = new LecturersArray();
 	}
 	
 	public String getCommitteeName() {
@@ -22,84 +25,59 @@ public class Committee {
 	}
 	
 	public int getNumOfLecturersInCommittee() {
-		return numOfLecturersInCommittee;
+		return lecturersArray.getNumOfLecturers();
 	}
 	
-	public boolean newHeadOfCommittee(Lecturer newHead) {
+	public void newHeadOfCommittee(Lecturer newHead) throws InvalidDegreeException {
 		DegreeDetails degree = newHead.getDegree();
 		
 		if (!(degree.equals(DegreeDetails.Doctor) || degree.equals(DegreeDetails.Professor))) {
-			return false;
+			throw new InvalidDegreeException(degree, "Head of committee");
+
 		}
-		
 		this.headOfCommittee = newHead;
-		
-		for (int i = 0; i < numOfLecturersInCommittee; i++) {
-			if (lecturersArray[i].getLecturerName().equals(newHead.getLecturerName())) {
-				removeLecturerFromCommittee(newHead.getLecturerName());
-				break;
-			}
-		}
-		return true;
+        try {
+            removeLecturerFromCommittee(newHead.getLecturerName());
+        } catch (LecturerNotFoundException e) {
+			// ignore exception, New head of committee was not in the committee
+        }
+    }
+	
+	public void addLecturerToCommittee(Lecturer lecturer) throws LecturerAlreadyExistException {
+		lecturersArray.addLecturer(lecturer);
 	}
 	
-	public boolean addLecturerToCommittee(Lecturer lecturer) {
-		for (int i = 0; i < numOfLecturersInCommittee; i++) {
-			if (lecturersArray[i].getLecturerName().equals(lecturer.getLecturerName())) {
-				return false;
-			}
-		}
+	public void removeLecturerFromCommittee(String lecturerName) throws LecturerNotFoundException {
+		lecturersArray.removeLecturer(lecturerName);
+	}
 
-		if (numOfLecturersInCommittee == lecturersArray.length) {
-			int arraySize = lecturersArray.length;
-			if (arraySize == 0) {
-				arraySize = 1;
-			}
-			Lecturer[] newArray = new Lecturer[arraySize * 2];
-			for (int i = 0; i < numOfLecturersInCommittee; i++) {
-				newArray[i] = lecturersArray[i];
-			}
-			lecturersArray = newArray;
-		}
+	@Override
+	protected Committee clone() throws CloneNotSupportedException {
+		Committee clonedCommittee = (Committee) super.clone();
+		clonedCommittee.headOfCommittee = this.headOfCommittee;
+		clonedCommittee.committeeName = this.committeeName + "-new";
+		clonedCommittee.lecturersArray = this.lecturersArray.clone();
+		return clonedCommittee;
+	}
 
-		lecturersArray[numOfLecturersInCommittee] = lecturer;
-		numOfLecturersInCommittee++;
-		return true;
-	}
-	
-	public boolean removeLecturerFromCommittee(String lecturerName) {
-		int index = -1;
-		for (int i = 0; i < numOfLecturersInCommittee; i++) {
-			if (lecturersArray[i].getLecturerName().equals(lecturerName)) {
-				index = i;
-				break;
-			}
-		}
-		
-		if (index == -1) {
-			return false;
-		}
-		
-		Lecturer[] newArray = new Lecturer[numOfLecturersInCommittee - 1];
-		for (int i = 0, j = 0; i < numOfLecturersInCommittee; i++) {
-			if (i != index) {
-				newArray[j++] = lecturersArray[i];
-			}
-		}
-		lecturersArray = newArray;
-		numOfLecturersInCommittee--;
-		return true;
-	}
-	
-	public Lecturer[] getLecturers() {
-		return lecturersArray;
-	}
-	
 	public String toString() {
 		return "Committee Details: "+
 		"Name: " + committeeName + "," + 
 		"Head Of Committee: " + headOfCommittee +  "," +
-		"Number Of Lecturers In Committee: " + numOfLecturersInCommittee + ".";
-	 }
+		"Number Of Lecturers In Committee: " + lecturersArray.getNumOfLecturers() + ".";
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		Committee other = (Committee) obj;
+		return committeeName.equals(other.committeeName) &&
+				(headOfCommittee != null ? headOfCommittee.equals(other.headOfCommittee) : other.headOfCommittee == null) &&
+				lecturersArray.getNumOfLecturers() == other.lecturersArray.getNumOfLecturers();
+	}
 
 }

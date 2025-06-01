@@ -1,18 +1,24 @@
 package RonMaorGeffenAmar;
 
+import Exceptions.*;
+
 public class College {
 
 	private String collegeName;
 	private final LecturersArray lecturersArray;
 	private final CommitteesArray committeesArray;
 	private final DepartmentsArray departmentsArray;
-	int numOfLecturers,numOfCommittees,numOfDepartments;
 
 	public College(String collegeName) {
-		this.lecturersArray = new LecturersArray(numOfLecturers);
-		this.committeesArray = new CommitteesArray(numOfCommittees);
-		this.departmentsArray = new DepartmentsArray(numOfDepartments);
+		this.collegeName = collegeName;
+		this.lecturersArray = new LecturersArray();
+		this.committeesArray = new CommitteesArray();
+		this.departmentsArray = new DepartmentsArray();
 
+	}
+
+	public String getCollageName() {
+		return collegeName;
 	}
 
 	public LecturersArray getLecturersArray() {
@@ -32,95 +38,122 @@ public class College {
 		return collegeName;
 	}
 
-	public void addLecturerToCollege(Lecturer lecturer) {
+	public void addLecturerToCollege(Lecturer lecturer) throws LecturerAlreadyExistException {
 		lecturersArray.addLecturer(lecturer);
 	}
 
 	public Lecturer findLecturerByNameInCollege(String name) {
 		return lecturersArray.getLecturerByName(name);
 	}
-	
-	public boolean isLecturerExistInCollege(String name) {
-		return lecturersArray.isLecturerExist(name);
-	}
-	
-	public void addCommitteeToCollege(Committee committee) {
+
+	public void addCommitteeToCollege(String committeeName) throws CommitteeAlreadyExistException {
+		Committee committee = new Committee(committeeName);
 		committeesArray.addCommittee(committee);
 	}
-	
-	public boolean isCommitteeExistInCollege(String committee) {
-		return committeesArray.isCommitteeExist(committee);
-	
-	}
 
-	public void addDepartmentToCollege(Department department) {
+	public void addDepartmentToCollege (Department department) throws DepartmentAlreadyExistException {
 		departmentsArray.addDepartment(department);
 	}
-	
-	public boolean isDepartmentExistInCollege(String department) {
-		return departmentsArray.isDepartmentExist(department);
-	
-	}
-	
+
 	public Lecturer getLecturerByName(String name) {
 		return lecturersArray.getLecturerByName(name);
-	
+
 	}
-	
+
 	public Department getDepartmentByName(String name) {
 		return departmentsArray.getDepartmentByName(name);
-		
+
 	}
-	
-	public Committee getCommitteeByName(String name) {
+
+	public Committee getCommitteeByName(String name) throws CommitteeNotFoundException {
 		return committeesArray.getCommitteeByName(name);
-	
 	}
-	
+
 	public void showCommitteesInCollege() {
 		committeesArray.showCommittees();
 	}
-	
+
 	public void showLecturersInCollege() {
 		lecturersArray.showLecturers();
 	}
-	
+
 	public double getTotalAverageWage() {
 		return lecturersArray.getLecturerWageAverage();
 
 	}
-	
+
 	public double getAverageWageByDepartment(String departmentName) {
 		Department department = departmentsArray.getDepartmentByName(departmentName);
 		return department.getDepartmentWageAverage();
 	}
-	
-	public boolean addLecturerToCommittee(String lecturerName,String committeeName) {
+
+	public void addLecturerToCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException, CommitteeNotFoundException, LecturerAlreadyExistException, CommitteeAlreadyExistException {
 		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
-		Committee committee = committeesArray.getCommitteeByName(committeeName);
-		
-		if (lecturer != null && committee != null) {
-			return committee.addLecturerToCommittee(lecturer) && lecturer.addLecturerToCommittee(committee);
+		if (lecturer == null) {
+			throw new LecturerNotFoundException(lecturerName);
 		}
-		return false;
-	}
-	
-	public boolean removeLecturerFromCommittee(String lecturerName,String committeeName) {
+
 		Committee committee = committeesArray.getCommitteeByName(committeeName);
-		if (committee != null) {
-			return committee.removeLecturerFromCommittee(lecturerName);
+
+		if (committee == null) {
+			throw new CommitteeNotFoundException(committeeName);
 		}
-		return false;
+
+		committee.addLecturerToCommittee(lecturer);
+		lecturer.addCommitteeToLecturer(committee);
 	}
-	
-	public boolean NewHeadOfCommittee(String lecturerName,String committeeName) {
+
+	public void removeLecturerFromCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException, CommitteeNotFoundException {
+		Committee committee = committeesArray.getCommitteeByName(committeeName);
+		if (committee == null) {
+			throw new CommitteeNotFoundException(committeeName);
+		}
+
+		committee.removeLecturerFromCommittee(lecturerName);
+	}
+
+	public void newHeadOfCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException, CommitteeNotFoundException {
 		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
-		Committee committee = committeesArray.getCommitteeByName(committeeName);
-		
-		if (lecturer != null && committee != null) {
-			return committee.newHeadOfCommittee(lecturer);
+		if (lecturer == null) {
+			throw new LecturerNotFoundException(lecturerName);
 		}
-		return false;
+
+		Committee committee = committeesArray.getCommitteeByName(committeeName);
+		if (committee == null) {
+			throw new CommitteeNotFoundException(committeeName);
+		}
+		committee.newHeadOfCommittee(lecturer);
+	}
+
+	public int compareDoctorsAndProfessorsByResearchPapers(Doctor firstLecturer, Doctor secondLecturer) {
+		return firstLecturer.compareTo(secondLecturer);
+	}
+
+	public void addLecturerToDepartment(String lecturerName, String departmentName) throws LecturerNotFoundException, DepartmentNotFoundException {
+		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
+		if (lecturer == null) {
+			throw new LecturerNotFoundException("Lecturer not found: " + lecturerName);
+		}
+
+		Department department = departmentsArray.getDepartmentByName(departmentName);
+		if (department == null) {
+			throw new DepartmentNotFoundException("Department not found: " + departmentName);
+		}
+	}
+
+	public int compareDepartments(Department firstDepartment, Department secondDepartment) {
+		// TODO - Implement comparison logic based on your criteria
+		return 0;
+	}
+
+	public void cloneCommittee(String committeeName) throws CommitteeNotFoundException, CloneNotSupportedException, CommitteeAlreadyExistException {
+		Committee committee = committeesArray.getCommitteeByName(committeeName);
+		if (committee == null) {
+			throw new CommitteeNotFoundException(committeeName);
+		}
+
+		Committee clonedCommittee = committee.clone();
+		committeesArray.addCommittee(clonedCommittee);
 	}
 }
 

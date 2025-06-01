@@ -49,20 +49,44 @@ public class Department {
 			if (arraySize == 0) {
 				arraySize = 1;
 			}
-			Lecturer[] newArray = new Lecturer[arraySize * 2];
-			for (int i = 0; i < lecturersArray.length; i++) {
-				newArray[i] = lecturersArray[i];
-			}
-			lecturersArray = newArray;
+			lecturersArray = Arrays.copyOf(lecturersArray, arraySize * 2);
 		}
 		
-		lecturersArray[departmentNumOfLecturers++] = lecturer;
+		lecturersArray[departmentNumOfLecturers] = lecturer;
+		departmentNumOfLecturers++;
 		return true;
+	}
+
+	public boolean removeLecturerFromDepartment(Lecturer lecturer) {
+		for (int i = 0; i < departmentNumOfLecturers; i++) {
+			if (lecturersArray[i] != null && lecturersArray[i].equals(lecturer)) {
+				// Shift remaining elements to fill the gap
+				for (int j = i; j < departmentNumOfLecturers - 1; j++) {
+					lecturersArray[j] = lecturersArray[j + 1];
+				}
+				lecturersArray[departmentNumOfLecturers - 1] = null;
+				departmentNumOfLecturers--;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public String toString() {
 		return departmentName;
+	}
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || getClass() != object.getClass()) {
+			return false;
+		}
+		Department that = (Department) object;
+		return departmentNumOfStudents == that.departmentNumOfStudents &&
+				departmentNumOfLecturers == that.departmentNumOfLecturers &&
+				departmentName.equals(that.departmentName);
 	}
 }
 

@@ -16,4 +16,15 @@ public enum DegreeDetails {
 
         };
     }
+
+    public static String getAllDegrees() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < DegreeDetails.values().length; i++) {
+            builder.append(DegreeDetails.values()[i].name());
+            if (i < DegreeDetails.values().length - 1) {
+                builder.append(", ");
+            }
+        }
+        return builder.toString();
+    }
 }

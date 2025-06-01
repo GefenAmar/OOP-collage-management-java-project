@@ -1,5 +1,7 @@
 package RonMaorGeffenAmar;
 
+import Exceptions.CommitteeAlreadyExistException;
+
 public class Lecturer {
 	private final String lecturerName;
     private final String degreeName;
@@ -7,8 +9,7 @@ public class Lecturer {
 	private final int id;
     private final int wage;
 	private Department department;
-	private Committee[] committees;
-	private int numOfCommitteesLecturerIsIn;
+	private final CommitteesArray committees;
 
 
 	public Lecturer(String lecturerName, String degree, String degreeName, int id, int wage) {
@@ -18,8 +19,7 @@ public class Lecturer {
 		this.department = null;
 		this.id = id;
 		this.wage = wage;
-		this.committees = new  Committee[2];
-		this.numOfCommitteesLecturerIsIn = 0;
+		this.committees = new CommitteesArray();
 	}
 	
 	public String getLecturerName() {
@@ -50,34 +50,22 @@ public class Lecturer {
 		this.department = department;
 	}
 
-	public boolean addLecturerToCommittee(Committee committee) {
-		if (numOfCommitteesLecturerIsIn == committees.length) {
-			int arraySize = committees.length;
-			if (arraySize == 0) {
-				arraySize = 1;
-			}
-			Committee[] newArray = new Committee[arraySize * 2];
-
-			for (int i = 0; i < committees.length; i++) {
-				newArray[i] = committees[i];
-			}
-
-			committees = newArray;
-		}
-
-		committees[numOfCommitteesLecturerIsIn] = committee;
-		numOfCommitteesLecturerIsIn++;
-		return true;
+	public void addCommitteeToLecturer (Committee committee) throws CommitteeAlreadyExistException {
+		committees.addCommittee(committee);
 	}
 
 	private String getLecturerCommittees() {
+		Committee[] committeesArray = committees.getCommitteesArray();
 		StringBuilder committeesString = new StringBuilder();
-		for (int i = 0; i < numOfCommitteesLecturerIsIn; i++) {
-			committeesString.append(committees[i].getCommitteeName());
-			if (i != numOfCommitteesLecturerIsIn - 1) {
+		int numOfCommittees = committees.getNumOfCommittees();
+
+		for (int i = 0; i < numOfCommittees; i++) {
+			committeesString.append(committeesArray[i].getCommitteeName());
+			if (i != numOfCommittees - 1) {
 				committeesString.append(", ");
 			}
 		}
+
 		return committeesString.toString();
 	}
 
@@ -90,5 +78,21 @@ public class Lecturer {
 		"Committees: " + getLecturerCommittees() +  ", " +
 		"ID: " + id +  ", " +
 		"Wage: " + wage + ".";
+	 }
+	 public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		Lecturer other = (Lecturer) obj;
+		return lecturerName.equals(other.lecturerName) &&
+				degreeName.equals(other.degreeName) &&
+				degree == other.degree &&
+				id == other.id &&
+				wage == other.wage &&
+				(department != null ? department.equals(other.department) : other.department == null) &&
+				committees.getNumOfCommittees() == other.committees.getNumOfCommittees() ;
 	 }
 }

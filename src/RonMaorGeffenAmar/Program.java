@@ -1,5 +1,6 @@
 package RonMaorGeffenAmar;//Ron Maor and Geffen Amar
-import Exceptions.DepartmentNotFoundException;
+
+import Exceptions.*;
 
 import java.util.Scanner;
 
@@ -23,7 +24,12 @@ public class Program {
 			"Show Lecturers Total Average Wage",
 			"Show Lecturers Average Wage Per Department",
 			"Show Lecturers & Details",
-			"Show Committees & Details"
+			"Show Committees & Details",
+			"Compare Doctors and Professors by Number of Research Papers",
+			"Compare Departments by number of members OR total number of research papers of Department's members",
+			"Copy all the details of the chosen committee to a new committee with the same name (changes are doable afterwards)",
+			"Book Lecturer to Department",
+
 			// Add more options
 	};
 
@@ -48,10 +54,83 @@ public class Program {
 				case 8 -> showDepartmentAverageWage(college);
 				case 9 -> college.showLecturersInCollege();
 				case 10 -> college.showCommitteesInCollege();
-
+				case 11 -> compareDoctorsAndProfessorsByResearchPapers(college);
+				case 12 -> compareDepartments(college);
+				case 13 -> cloneCommittee(college);
+				//case 14 -> college.bookLecturerToDepartment();
 				default -> System.out.println("Unexpected value");
 			}
 		} while (userChosen != 0);
+	}
+
+	private static void cloneCommittee(College college) {
+		System.out.println("Enter Committee Name to Clone: ");
+		String committeeName = s.nextLine();
+
+        try {
+            college.cloneCommittee(committeeName);
+			System.out.println("Committee cloned successfully.");
+        } catch (CommitteeNotFoundException | CloneNotSupportedException | CommitteeAlreadyExistException e) {
+			System.out.println(e.getMessage());
+        }
+    }
+
+	private static void compareDepartments(College college) {
+		System.out.println("Comparing Departments");
+		System.out.println("Enter name of first Department: ");
+		String firstDepartmentName = s.nextLine();
+
+		System.out.println("Enter name of second Department: ");
+		String secondDepartmentName = s.nextLine();
+
+		Department firstDepartment = college.getDepartmentsArray().getDepartmentByName(firstDepartmentName);
+		if (firstDepartment == null) {
+			System.out.println("Department " + firstDepartmentName + " not found.");
+			return;
+		}
+
+		Department secondDepartment = college.getDepartmentsArray().getDepartmentByName(secondDepartmentName);
+		if (secondDepartment == null) {
+			System.out.println("Department " + secondDepartmentName + " not found.");
+			return;
+		}
+
+		int compareResult = college.compareDepartments(firstDepartment, secondDepartment);
+		if (compareResult > 0) {
+			System.out.println(firstDepartmentName + " is greater than " + secondDepartmentName);
+		} else if (compareResult < 0) {
+			System.out.println(secondDepartmentName + " is greater than " + firstDepartmentName);
+		} else {
+			System.out.println(firstDepartmentName + " and " + secondDepartmentName + " have the same number of members and same number of research papers.");
+		}
+	}
+
+	private static void compareDoctorsAndProfessorsByResearchPapers(College college) {
+		System.out.println("Comparing Doctors and Professors by Number of Research Papers");
+		System.out.println("Enter name of first Doctor/Professor: ");
+		String firstName = s.nextLine();
+		System.out.println("Enter name of second Doctor/Professor: ");
+		String secondName = s.nextLine();
+
+		Lecturer firstLecturer = college.getLecturerByName(firstName);
+		if (!(firstLecturer instanceof  Doctor)) {
+			System.out.println("Lecturer " + firstName + " not found or is not a Doctor/Professor.");
+			return;
+		}
+		Lecturer secondLecturer = college.getLecturerByName(secondName);
+		if (!(secondLecturer instanceof  Doctor)) {
+			System.out.println("Lecturer " + secondName + " not found or is not a Doctor/Professor.");
+			return;
+		}
+
+		int compareResult = college.compareDoctorsAndProfessorsByResearchPapers((Doctor) firstLecturer, (Doctor) secondLecturer);
+		if (compareResult > 0) {
+			System.out.println(firstName + " has more research papers than " + secondName);
+		} else if (compareResult < 0) {
+			System.out.println(secondName + " has more research papers than " + firstName);
+		} else {
+			System.out.println(firstName + " and " + secondName + " have the same number of research papers.");
+		}
 	}
 
 	private static int getUserInput(Scanner s) {
@@ -72,28 +151,35 @@ public class Program {
 		System.out.println("Total Average Wage: " + totalAverageWage);
 	}
 
-	private static void showDepartmentAverageWage(College college) throws DepartmentNotFoundException {
-        System.out.println("Choose a department");
-        String name = s.nextLine();
-
-        double averageWageByDepartment = college.getAverageWageByDepartment(name);
+	private static void showDepartmentAverageWage(College college) {
+		System.out.println("Choose a department");
+		String name = s.nextLine();
+		double averageWageByDepartment = college.getAverageWageByDepartment(name);
 		System.out.println("Department Wage Average: " + averageWageByDepartment);
 	}
 
-
 	private static void addDepartment(College college) {
-		System.out.println("Enter Department Name: ");
-		String departmentName = s.nextLine();
-		while (college.isDepartmentExistInCollege(departmentName)) {
-			System.out.print("Department name already exist. Try again: ");
-			departmentName = s.nextLine();
-		}
-		System.out.println("Enter number of students in this department: ");
-		int numOfStudents = s.nextInt();
+		boolean success = false;
+		int numOfStudents = -1;
+		while (!success) {
+			System.out.println("Enter Department Name: ");
+			String departmentName = s.nextLine();
 
-		Department department = new Department(departmentName,numOfStudents);
-		college.addDepartmentToCollege(department);
-	}
+			if (numOfStudents == -1) {
+				System.out.println("Enter number of students in this department: ");
+				numOfStudents = s.nextInt();
+			}
+
+			Department department = new Department(departmentName, numOfStudents);
+			try {
+				college.addDepartmentToCollege(department);
+				System.out.println("Department has been added successfully.");
+				success = true;
+			} catch (DepartmentAlreadyExistException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+    }
 
 	private static void removeCommitteeMember(College college) {
 		System.out.println("Enter Lecturer Name: ");
@@ -102,8 +188,13 @@ public class Program {
 		System.out.println("Enter Committee Name: ");
 		String committeeToRemoveFrom = s.nextLine();
 
-		college.removeLecturerFromCommittee(lecturerToRemove, committeeToRemoveFrom);
-	}
+        try {
+            college.removeLecturerFromCommittee(lecturerToRemove, committeeToRemoveFrom);
+			System.out.println("Lecturer has been removed successfully from the committee.");
+        } catch (LecturerNotFoundException | CommitteeNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 	private static void addCommitteeHead(College college) {
 		System.out.println("Enter committee name: ");
@@ -112,8 +203,12 @@ public class Program {
 		System.out.println("Enter lecturer name: ");
 		String newHeadOfCommittee = s.nextLine();
 
-		college.NewHeadOfCommittee(newHeadOfCommittee, committeeNameForHead);
-	}
+        try {
+            college.newHeadOfCommittee(newHeadOfCommittee, committeeNameForHead);
+        } catch (LecturerNotFoundException | CommitteeNotFoundException e) {
+			System.out.println(e.getMessage());
+        }
+    }
 
 	private static void addCommitteeMember(College college) {
 		System.out.println("Enter Lecturer Name: ");
@@ -122,62 +217,90 @@ public class Program {
 		System.out.println("Enter Committee Name: ");
 		String committeeNameForLecturer = s.nextLine();
 
-		boolean addLecturerToCommitteeSuccess = college.addLecturerToCommittee(lecturerNameForCommittee, committeeNameForLecturer);
-
-		if (!addLecturerToCommitteeSuccess) {
-			System.out.println("Failed to add Lecturer to the committee.");
+		try {
+			college.addLecturerToCommittee(lecturerNameForCommittee, committeeNameForLecturer);
+			System.out.println("Lecturer has been added successfully.");
 		}
-
-		System.out.println("Lecturer has been added successfully.");
+		catch (LecturerNotFoundException | CommitteeNotFoundException | LecturerAlreadyExistException |
+               CommitteeAlreadyExistException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private static void addCommittee(College college) {
-		System.out.println("Enter Committee Name: ");
-		String committeeName = s.nextLine();
-
-		while (college.isCommitteeExistInCollege(committeeName)) {
-			System.out.print("Committee name already exist. Try again: ");
-			committeeName = s.nextLine();
+		boolean success = false;
+		while (!success) {
+			System.out.println("Enter Committee Name: ");
+			String committeeName = s.nextLine();
+			try {
+				college.addCommitteeToCollege(committeeName);
+				System.out.println("Committee has been added successfully.");
+				success = true;
+			} catch (CommitteeAlreadyExistException e) {
+				System.out.println(e.getMessage());
+			}
 		}
-
-		Committee committee = new Committee(committeeName);
-		college.addCommitteeToCollege(committee);
 	}
 
 	private static void addLecturer(College college) {
+		boolean success = false;
+		String lecturerDegree = null;
+		String lecturerDegreeName = null;
+		int lecturerID = -1;
+		int lecturerWage = -1;
+
+		while (!success) {
+			System.out.println("Enter Lecturer Name: ");
+			String lecturerName = s.nextLine();
+
+			if (lecturerName == null) {
+				System.out.println("Enter Lecturer Degree: " + DegreeDetails.getAllDegrees());
+				lecturerDegree = s.nextLine();
+			}
+
+			if (lecturerDegreeName == null) {
+				System.out.println("Enter Lecturer Degree Name: ");
+				lecturerDegreeName = s.nextLine();
+			}
+
+			if (lecturerID == -1) {
+				System.out.println("Enter Lecturer ID: ");
+				lecturerID = s.nextInt();
+				s.nextLine();
+			}
+
+			if (lecturerWage == -1) {
+				System.out.println("Enter Lecturer Wage: ");
+				lecturerWage = s.nextInt();
+				s.nextLine();
+			}
+
+			Lecturer lecturer = new Lecturer(lecturerName, lecturerDegree, lecturerDegreeName, lecturerID, lecturerWage);
+			try {
+				college.addLecturerToCollege(lecturer);
+				System.out.println("Lecturer has been added successfully to college.");
+				success = true;
+			} catch (LecturerAlreadyExistException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+	private static void bookLecturerToDepartment(College  college) throws LecturerNotFoundException, DepartmentNotFoundException {
 		System.out.println("Enter Lecturer Name: ");
 		String lecturerName = s.nextLine();
-		while (college.isLecturerExistInCollege(lecturerName)) {
-			System.out.print("Lecturer name already exist. Try again: ");
-			lecturerName = s.nextLine();
+
+		if (lecturerName == null) {
+			throw new LecturerNotFoundException("Lecturer not found.");
 		}
-		System.out.println("Enter Lecturer Degree: First/Second/Doctor/Professor ");
-		String lecturerDegree = s.nextLine();
-
-		System.out.println("Enter Lecturer Degree Name: ");
-		String lecturerDegreeName = s.nextLine();
-
-		System.out.println("Enter Lecturer Department: ");
-		String lecturerDepartment = s.nextLine();
-		Department departmentLinkedTo = college.getDepartmentByName(lecturerDepartment);
-
-		System.out.println("Enter Lecturer ID: ");
-		int lecturerID = s.nextInt();
-		s.nextLine();
-
-		System.out.println("Enter Lecturer Wage: ");
-		int lecturerWage = s.nextInt();
-		s.nextLine();
-
-		Lecturer lecturer = new Lecturer(lecturerName, lecturerDegree, lecturerDegreeName, lecturerID, lecturerWage);
-		college.addLecturerToCollege(lecturer);
-		System.out.println("Lecturer has been added successfully to college.");
-		boolean addedToDepartment = departmentLinkedTo.addLecturerToDepartment(lecturer);
-		if (addedToDepartment) {
-			lecturer.setDepartment(departmentLinkedTo);
-			System.out.println("Lecturer has been added successfully to department.");
-		} else {
-			System.out.println("Failed to add lecturer to department.");
+		System.out.println("Enter Department Name: ");
+		String departmentName = s.nextLine();
+		if(departmentName == null) {
+			throw new DepartmentNotFoundException("Department not found.");
 		}
+		college.addLecturerToDepartment(lecturerName, departmentName);
+
+
+
+
 	}
 }
