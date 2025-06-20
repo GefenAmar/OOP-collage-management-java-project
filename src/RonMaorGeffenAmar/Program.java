@@ -4,6 +4,9 @@ import Comparators.CompareDepartmentsByMembers;
 import Comparators.CompareDepartmentsByPapers;
 import Exceptions.*;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 public class Program {
@@ -11,7 +14,16 @@ public class Program {
 
 	public static void main(String[] args) {
 		s = new Scanner(System.in);
-		run();
+		System.out.println("Enter The Name of The College:");
+		String collegeName = s.nextLine();
+		College college = new College(collegeName);
+		run(college);
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("college_data.bin"))) {
+			out.writeObject(college);
+			System.out.println("College data saved to college_data.bin");
+		} catch (IOException e) {
+			System.out.println("Error saving data: " + e.getMessage());
+		}
 		s.close();
 	}
 
@@ -35,11 +47,7 @@ public class Program {
 			"Compare Departments by total number of research papers of Department's members"
 	};
 
-	public static void run() {
-		s = new Scanner(System.in);
-		System.out.println("Enter The Name of The College:");
-		String collegeName = s.nextLine();
-		College college = new College(collegeName);
+	public static void run(College college) {
 		int userChosen;
 		do {
 			showMenu();
