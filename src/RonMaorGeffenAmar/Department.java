@@ -2,10 +2,10 @@ package RonMaorGeffenAmar;
 
 import Exceptions.LecturerAlreadyExistException;
 import Exceptions.LecturerNotFoundException;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class Department {
+public class Department implements Serializable {
 	private String departmentName;
 	private int departmentNumOfStudents;
 	private LecturersArray lecturersArray;

@@ -2,10 +2,10 @@ package RonMaorGeffenAmar;
 
 import Exceptions.*;
 
+import java.io.Serializable;
 
 
-
-public class College {
+public class College implements Serializable {
 
 	private String collegeName;
 	private LecturersArray lecturersArray;
@@ -149,5 +149,9 @@ public class College {
 		committeesArray.showCommittees();
 
 
+	}
+
+	public String getCollegeName() {
+		return collegeName;
 	}
 }

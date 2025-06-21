@@ -2,11 +2,11 @@ package RonMaorGeffenAmar;
 
 import Exceptions.LecturerAlreadyExistException;
 import Exceptions.LecturerNotFoundException;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LecturersArray implements Cloneable {
+public class LecturersArray implements Cloneable, Serializable {
     private List<Lecturer> lecturers;
 
     public LecturersArray() {

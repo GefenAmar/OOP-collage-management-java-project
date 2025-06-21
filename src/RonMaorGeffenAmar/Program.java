@@ -4,9 +4,7 @@ import Comparators.CompareDepartmentsByMembers;
 import Comparators.CompareDepartmentsByPapers;
 import Exceptions.*;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.Scanner;
 
 public class Program {
@@ -14,10 +12,26 @@ public class Program {
 
 	public static void main(String[] args) {
 		s = new Scanner(System.in);
-		System.out.println("Enter The Name of The College:");
-		String collegeName = s.nextLine();
-		College college = new College(collegeName);
+		College college = null;
+
+		File collegeFile = new File("college_data.bin");
+		if (collegeFile.exists()) {
+			try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(collegeFile))) {
+				college = (College) in.readObject();
+				System.out.println("Loaded existing college: " + college.getCollegeName());
+			} catch (IOException | ClassNotFoundException e) {
+				System.out.println("Error loading college data: " + e.getMessage());
+			}
+		}
+
+		if (college == null) {
+			System.out.println("Enter The Name of The College:");
+			String collegeName = s.nextLine();
+			college = new College(collegeName);
+		}
+
 		run(college);
+
 		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("college_data.bin"))) {
 			out.writeObject(college);
 			System.out.println("College data saved to college_data.bin");

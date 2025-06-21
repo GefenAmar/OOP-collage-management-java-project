@@ -4,6 +4,7 @@ package RonMaorGeffenAmar;
 import Exceptions.InvalidDegreeException;
 import Exceptions.LecturerAlreadyExistException;
 import Exceptions.LecturerNotFoundException;
+import java.io.Serializable;
 
 public class Committee implements Cloneable {
 	private String committeeName;

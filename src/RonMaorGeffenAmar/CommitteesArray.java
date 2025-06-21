@@ -1,9 +1,11 @@
 package RonMaorGeffenAmar;
 
 import Exceptions.CommitteeAlreadyExistException;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CommitteesArray {
+public class CommitteesArray implements Cloneable, Serializable {
     private final ArrayList<Committee> committees;
 
 

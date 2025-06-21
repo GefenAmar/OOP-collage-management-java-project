@@ -1,8 +1,9 @@
 package RonMaorGeffenAmar;
 
 import Exceptions.CommitteeAlreadyExistException;
+import java.io.Serializable;
 
-public class Lecturer {
+public class Lecturer implements Serializable {
 	private final String lecturerName;
     private final String degreeName;
 	protected DegreeDetails degree;

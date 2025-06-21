@@ -2,10 +2,11 @@ package RonMaorGeffenAmar;
 
 import Exceptions.DepartmentAlreadyExistException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentsArray {
+public class DepartmentsArray implements Serializable {
     private final List<Department> departments;
 
     public DepartmentsArray() {
