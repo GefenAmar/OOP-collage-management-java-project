@@ -1,6 +1,8 @@
 package RonMaorGeffenAmar;
 
-public enum DegreeDetails {
+import java.io.Serializable;
+
+public enum DegreeDetails implements Serializable {
     First,
     Second,
     Doctor,
@@ -8,14 +10,16 @@ public enum DegreeDetails {
 
 
     public static DegreeDetails fromName(String name) {
-        return switch (name.toLowerCase()) {
+        return switch (name.toLowerCase()){
             case "first" -> DegreeDetails.First;
             case "second" -> DegreeDetails.Second;
             case "doctor" -> DegreeDetails.Doctor;
-            default -> DegreeDetails.Professor;
+            case "professor" -> DegreeDetails.Professor;
+            default -> throw new IllegalArgumentException("Invalid degree: " + name);
 
         };
     }
+
 
     public static String getAllDegrees() {
         StringBuilder builder = new StringBuilder();

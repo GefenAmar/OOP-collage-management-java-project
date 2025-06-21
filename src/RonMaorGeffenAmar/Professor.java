@@ -6,6 +6,7 @@ public class Professor extends Doctor {
     public Professor(String lecturerName, String degreeName, int id, int wage, String[] researchPapers, String nameOfUniversity) {
         super(lecturerName, degreeName, id, wage, researchPapers);
         this.nameOfUniversity = nameOfUniversity;
+        this.degree = DegreeDetails.Professor;
     }
 
     @Override
@@ -21,6 +22,3 @@ public class Professor extends Doctor {
                 this.nameOfUniversity.equals(professor.nameOfUniversity);
     }
 }
-
-
-
