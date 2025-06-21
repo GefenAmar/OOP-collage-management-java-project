@@ -3,6 +3,8 @@ package RonMaorGeffenAmar;
 import Exceptions.LecturerAlreadyExistException;
 import Exceptions.LecturerNotFoundException;
 
+import java.util.List;
+
 public class Department {
 	private String departmentName;
 	private int departmentNumOfStudents;
@@ -31,11 +33,11 @@ public class Department {
 			return 0;
 		}
 
-		Lecturer[] lecturers = lecturersArray.getLecturersArray();
-		
+		List<Lecturer> lecturers = lecturersArray.getLecturers();
+
 		int totalWage = 0;
-		for (int i = 0; i < departmentNumOfLecturers; i++) {
-			totalWage += lecturers[i].getLecturerWage();
+		for (Lecturer lecturer : lecturers) {
+			totalWage += lecturer.getWage();
 		}
 		return (double) totalWage / departmentNumOfLecturers;
 	}
@@ -74,14 +76,3 @@ public class Department {
 		return lecturersArray.getLecturersNumOfResearchPapers();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

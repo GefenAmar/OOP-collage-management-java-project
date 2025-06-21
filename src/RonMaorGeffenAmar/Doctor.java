@@ -40,5 +40,9 @@ public class Doctor extends Lecturer implements Comparable {
         }
         return Integer.compare(this.numberOfResearchPapers, otherDoctor.numberOfResearchPapers);
     }
+
+    public int getNumOfResearchPapers() {
+        return researchPapers.length;
+    }
 }
 

@@ -2,52 +2,41 @@ package RonMaorGeffenAmar;
 
 import Exceptions.DepartmentAlreadyExistException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DepartmentsArray {
-	private int numOfDepartments;
-	private Department[] departmentsArray;
-	
-	public DepartmentsArray() {
-		this.numOfDepartments = 0;
-		this.departmentsArray = new Department[2];
-	}
+    private final List<Department> departments;
 
-	public void addDepartment(Department department) throws DepartmentAlreadyExistException {
-		if (isDepartmentExist(department.getDepartmentName())) {
-			throw new DepartmentAlreadyExistException(department.getDepartmentName());
-		}
+    public DepartmentsArray() {
+        this.departments = new ArrayList<>();
+    }
 
-		if (numOfDepartments == departmentsArray.length) {
-			int arraySize = departmentsArray.length;
-			if (arraySize == 0) {
-				arraySize = 1;
-			}
-			Department[] newArray = new Department[arraySize * 2];
-			
-			for (int i = 0; i < departmentsArray.length; i++) {
-				newArray[i] = departmentsArray[i];
-			}
-			
-			departmentsArray = newArray;
-		}
-		departmentsArray[numOfDepartments] = department;
-		numOfDepartments ++;
-	}
-	 
-	public Department getDepartmentByName(String departmentName) {
-		for (int i=0; i < numOfDepartments; i++) {
-			if(departmentsArray[i].getDepartmentName().equals(departmentName)) {
-				return departmentsArray[i];
-			}
-		}
-		return null;
-	}
+    public void addDepartment(Department department) throws DepartmentAlreadyExistException {
+        if (isDepartmentExist(department.getDepartmentName())) {
+            throw new DepartmentAlreadyExistException(department.getDepartmentName());
+        }
+        departments.add(department);
+    }
 
-	private boolean isDepartmentExist(String name) {
-		for(int i=0; i < numOfDepartments ; i++) {
-			if (departmentsArray[i].getDepartmentName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
- }
+    public boolean isDepartmentExist(String departmentName) {
+        for (Department department : departments) {
+            if (department.getDepartmentName().equals(departmentName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public Department getDepartmentByName(String departmentName) {
+        for (Department department : departments) {
+            if (department.getDepartmentName().equals(departmentName)) {
+                return department;
+            }
+        }
+        return null;
+
+    }
+
+}

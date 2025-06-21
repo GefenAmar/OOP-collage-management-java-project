@@ -145,7 +145,7 @@ public class Program {
 				compareResult = new CompareDepartmentsByPapers().compare(firstDepartment, secondDepartment);
 				break;
 			default:
-				// should not happen as we passed a valid comparison type from the menu
+
 				System.out.println(comparisonType + " is not a valid comparison type.");
 				return;
 		}
@@ -275,7 +275,7 @@ public class Program {
 			System.out.println("Lecturer has been added successfully.");
 		}
 		catch (LecturerNotFoundException | CommitteeNotFoundException | LecturerAlreadyExistException |
-               CommitteeAlreadyExistException e) {
+               CommitteeAlreadyExistException | InvalidDegreeException e) {
 			System.out.println(e.getMessage());
 		}
 	}
@@ -285,8 +285,12 @@ public class Program {
 		while (!success) {
 			System.out.println("Enter Committee Name: ");
 			String committeeName = s.nextLine();
+
+			System.out.println("Enter Committee Members Required Degree: " + DegreeDetails.getAllDegrees());
+			String committeeDegree = s.nextLine();
 			try {
-				college.addCommitteeToCollege(committeeName);
+				DegreeDetails committeeDegreeDetails = DegreeDetails.fromName(committeeDegree);
+				college.addCommitteeToCollege(committeeName, committeeDegreeDetails);
 				System.out.println("Committee has been added successfully.");
 				success = true;
 			} catch (CommitteeAlreadyExistException e) {

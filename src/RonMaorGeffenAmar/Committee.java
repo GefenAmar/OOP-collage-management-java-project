@@ -9,11 +9,13 @@ public class Committee implements Cloneable {
 	private String committeeName;
 	private Lecturer headOfCommittee;
 	private LecturersArray lecturersArray;
-	
-	public Committee(String committeeName) {
+	private DegreeDetails committeeDegree;
+
+	public Committee(String committeeName, DegreeDetails committeeDegreeDetails) {
 		this.committeeName = committeeName;
 		this.headOfCommittee = null;
 		this.lecturersArray = new LecturersArray();
+		this.committeeDegree = committeeDegreeDetails;
 	}
 	
 	public String getCommitteeName() {
@@ -33,7 +35,6 @@ public class Committee implements Cloneable {
 		
 		if (!(degree.equals(DegreeDetails.Doctor) || degree.equals(DegreeDetails.Professor))) {
 			throw new InvalidDegreeException(degree, "Head of committee");
-
 		}
 		this.headOfCommittee = newHead;
         try {
@@ -43,12 +44,24 @@ public class Committee implements Cloneable {
         }
     }
 	
-	public void addLecturerToCommittee(Lecturer lecturer) throws LecturerAlreadyExistException {
-		lecturersArray.addLecturer(lecturer);
-	}
-	
+	public void addLecturerToCommittee(Lecturer lecturer) throws LecturerAlreadyExistException, InvalidDegreeException {
+        if (lecturer == headOfCommittee) {
+            lecturersArray.addLecturer(lecturer);
+            return;
+        }
+
+        if (!committeeDegree.equals(lecturer.getDegree())) {
+            throw new InvalidDegreeException(lecturer.getDegree(), "committee member");
+        }
+
+        lecturersArray.addLecturer(lecturer);
+    }
+
 	public void removeLecturerFromCommittee(String lecturerName) throws LecturerNotFoundException {
 		lecturersArray.removeLecturer(lecturerName);
+		if (getNumOfLecturersInCommittee() == 0) {
+			committeeDegree = null;
+		}
 	}
 
 	@Override
@@ -56,9 +69,14 @@ public class Committee implements Cloneable {
 		Committee clonedCommittee = (Committee) super.clone();
 		clonedCommittee.headOfCommittee = this.headOfCommittee;
 		clonedCommittee.committeeName = this.committeeName + "-new";
-		clonedCommittee.lecturersArray = this.lecturersArray.clone();
+		clonedCommittee.lecturersArray = (LecturersArray) this.lecturersArray.clone();
 		return clonedCommittee;
 	}
+
+
+    public DegreeDetails getCommitteeDegree() {
+        return committeeDegree;
+    }
 
 	public String toString() {
 		return "Committee Details: "+
@@ -79,5 +97,4 @@ public class Committee implements Cloneable {
 				(headOfCommittee != null ? headOfCommittee.equals(other.headOfCommittee) : other.headOfCommittee == null) &&
 				lecturersArray.getNumOfLecturers() == other.lecturersArray.getNumOfLecturers();
 	}
-
 }

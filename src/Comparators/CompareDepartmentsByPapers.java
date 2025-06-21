@@ -8,13 +8,13 @@ public class CompareDepartmentsByPapers implements Comparator<Department> {
     @Override
     public int compare(Department department1, Department department2) {
         if (department1 == null && department2 == null) {
-            return 0; // Both are null, considered equal
+            return 0;
         }
         if (department1 == null) {
-            return -1; // Null is considered less than any non-null object
+            return -1;
         }
         if (department2 == null) {
-            return 1; // Non-null object is considered greater than null
+            return 1;
         }
 
         return Integer.compare(department1.getDepartmentNumOfResearchPapers(), department2.getDepartmentNumOfResearchPapers());

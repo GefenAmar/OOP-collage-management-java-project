@@ -38,10 +38,10 @@ public class Lecturer {
 		return id;
 	}
 	
-	public int getLecturerWage() {
-		return wage;
-	}
-	
+	public int getWage() {
+        return wage;
+    }
+
 	public Department getLecturerDepartment() {
 		return department;
 	}
@@ -95,4 +95,6 @@ public class Lecturer {
 				(department != null ? department.equals(other.department) : other.department == null) &&
 				committees.getNumOfCommittees() == other.committees.getNumOfCommittees() ;
 	 }
+
+
 }

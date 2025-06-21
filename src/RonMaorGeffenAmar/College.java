@@ -1,9 +1,7 @@
 package RonMaorGeffenAmar;
 
 import Exceptions.*;
-import java.io.ObjectInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
 
 
 
@@ -22,37 +20,19 @@ public class College {
 
 	}
 
-	public String getCollageName() {
-		return collegeName;
-	}
-
-	public LecturersArray getLecturersArray() {
-		return lecturersArray;
-	}
-
-	public CommitteesArray getCommitteesArray() {
-		return committeesArray;
-
-	}
 
 	public DepartmentsArray getDepartmentsArray() {
 		return departmentsArray;
 	}
 
-	public String getCollegeName() {
-		return collegeName;
-	}
 
 	public void addLecturerToCollege(Lecturer lecturer) throws LecturerAlreadyExistException {
 		lecturersArray.addLecturer(lecturer);
 	}
 
-	public Lecturer findLecturerByNameInCollege(String name) {
-		return lecturersArray.getLecturerByName(name);
-	}
 
-	public void addCommitteeToCollege(String committeeName) throws CommitteeAlreadyExistException {
-		Committee committee = new Committee(committeeName);
+	public void addCommitteeToCollege(String committeeName, DegreeDetails committeeDegreeDetails) throws CommitteeAlreadyExistException {
+		Committee committee = new Committee(committeeName, committeeDegreeDetails), c;
 		committeesArray.addCommittee(committee);
 	}
 
@@ -65,18 +45,12 @@ public class College {
 
 	}
 
-	public Department getDepartmentByName(String name) {
-		return departmentsArray.getDepartmentByName(name);
 
-	}
-
-	public Committee getCommitteeByName(String name) throws CommitteeNotFoundException {
+	public Committee getCommitteeByName(String name)  {
 		return committeesArray.getCommitteeByName(name);
 	}
 
-	public void showCommitteesInCollege() {
-		committeesArray.showCommittees();
-	}
+
 
 	public void showLecturersInCollege() {
 		lecturersArray.showLecturers();
@@ -92,20 +66,19 @@ public class College {
 		return department.getDepartmentWageAverage();
 	}
 
-	public void addLecturerToCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException, CommitteeNotFoundException, LecturerAlreadyExistException, CommitteeAlreadyExistException {
-		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
+	public void addLecturerToCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException,
+			CommitteeNotFoundException, LecturerAlreadyExistException, CommitteeAlreadyExistException, InvalidDegreeException {
+		Lecturer lecturer = getLecturerByName(lecturerName);
 		if (lecturer == null) {
 			throw new LecturerNotFoundException(lecturerName);
 		}
 
-		Committee committee = committeesArray.getCommitteeByName(committeeName);
-
+		Committee committee = getCommitteeByName(committeeName);
 		if (committee == null) {
 			throw new CommitteeNotFoundException(committeeName);
 		}
 
 		committee.addLecturerToCommittee(lecturer);
-		lecturer.addCommitteeToLecturer(committee);
 	}
 
 	public void removeLecturerFromCommittee(String lecturerName, String committeeName) throws LecturerNotFoundException, CommitteeNotFoundException {
@@ -137,7 +110,7 @@ public class College {
 	public void addLecturerToDepartment(String lecturerName, String departmentName) throws LecturerNotFoundException, DepartmentNotFoundException, LecturerAlreadyExistException {
 		Lecturer lecturer = lecturersArray.getLecturerByName(lecturerName);
 		if (lecturer == null) {
-			throw new LecturerNotFoundException( lecturerName);
+			throw new LecturerNotFoundException(lecturerName);
 		}
 
 		Department department = departmentsArray.getDepartmentByName(departmentName);
@@ -171,14 +144,10 @@ public class College {
 		}
 		lecturer.setDepartment(null);
 	}
+
+	public void showCommitteesInCollege() {
+		committeesArray.showCommittees();
+
+
+	}
 }
-
-
-
-
-
-	
-
-
-	
-	

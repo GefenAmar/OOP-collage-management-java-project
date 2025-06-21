@@ -1,75 +1,59 @@
 package RonMaorGeffenAmar;
 
 import Exceptions.CommitteeAlreadyExistException;
+import java.util.ArrayList;
 
 public class CommitteesArray {
-	private int numOfCommittees;
-	private Committee[] committeesArray;
-	
-	public CommitteesArray() {
-		this.numOfCommittees = 0;
-		this.committeesArray = new Committee[2];
-	}
-
-	public Committee[] getCommitteesArray() {
-		return committeesArray;
-	}
-
-	public int getNumOfCommittees() {
-		return numOfCommittees;
-	}
-	
-	public void addCommittee(Committee committee) throws CommitteeAlreadyExistException {
-		if (isCommitteeExist(committee.getCommitteeName())) {
-			throw new CommitteeAlreadyExistException(committee.getCommitteeName());
-		}
-
-		if (numOfCommittees == committeesArray.length) {
-			int arraySize = committeesArray.length;
-			if (arraySize == 0) {
-				arraySize = 1;
-			}
-			Committee[] newArray = new Committee[arraySize * 2];
-			
-			for (int i = 0; i < committeesArray.length; i++) {
-				newArray[i] = committeesArray[i];
-			}
-			
-			committeesArray = newArray;
-		}
-		committeesArray[numOfCommittees] = committee;
-		numOfCommittees ++;
-	}
+    private final ArrayList<Committee> committees;
 
 
-	public Committee getCommitteeByName (String committeeName) {
-		for (int i=0; i < numOfCommittees; i++) {
-			if(committeesArray[i].getCommitteeName().equals(committeeName)) {
-				return committeesArray[i];
-			}
-		}
+    public CommitteesArray() {
+        this.committees = new ArrayList<>();
+    }
 
-		return null;
-	}
+    public void addCommittee(Committee committee) throws CommitteeAlreadyExistException {
+        if (isCommitteeExist(committee.getCommitteeName())) {
+            throw new CommitteeAlreadyExistException(committee.getCommitteeName());
+        }
+        committees.add(committee);
+    }
 
-	public void showCommittees() {
-		if (numOfCommittees == 0) {
-			System.out.println("No core committees to display");
-			return;
-		}
+    public boolean isCommitteeExist(String committeeName) {
+        for (Committee committee : committees) {
+            if (committee.getCommitteeName().equals(committeeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		System.out.println("Committees:");
-		for (int i = 0; i < numOfCommittees ; i++) {
-			System.out.println((i+1) + "." + committeesArray[i]);
-		}
-	}
+    public Committee getCommitteeByName(String committeeName) {
+        for (Committee committee : committees) {
+            if (committee.getCommitteeName().equals(committeeName)) {
+                return committee;
+            }
+        }
+        return null;
+    }
 
-	private boolean isCommitteeExist(String name) {
-		for(int i=0; i < numOfCommittees ; i++) {
-			if (committeesArray[i].getCommitteeName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
+
+    public void showCommittees() {
+        if (committees.isEmpty()) {
+            System.out.println("No core committees to display");
+            return;
+        }
+
+        System.out.println("Committees:");
+        for (int i = 0; i < committees.size() ; i++) {
+            System.out.println((i+1) + "." + committees.get(i));
+        }
+    }
+
+    public int getNumOfCommittees() {
+        return committees.size();
+    }
+
+    public Committee[] getCommitteesArray() {
+        return committees.toArray(new Committee[0]);
+    }
 }
